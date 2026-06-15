@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة تحكم الموارد البشرية</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+
+  <!-- Chart.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js" defer></script>
+
+  <!-- SheetJS (XLSX) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" defer></script>
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- ── Mobile Overlay ── -->
+  <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       SIDEBAR
+  ══════════════════════════════════════════════════════════ -->
+  <aside class="sidebar" id="sidebar">
+
+    <div class="sidebar-logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+        </svg>
+      </div>
+      <div>
+        <div class="logo-text">HR Analytics</div>
+        <div class="logo-sub">نظام إدارة الموارد البشرية</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav" role="navigation" aria-label="القائمة الرئيسية">
+      <div class="nav-section">الرئيسية</div>
+
+      <div class="nav-item active" onclick="showTab('overview')" role="button" tabindex="0" aria-label="نظرة عامة">
+        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="3" y="3" width="7" height="7" rx="1"/>
+          <rect x="14" y="3" width="7" height="7" rx="1"/>
+          <rect x="3" y="14" width="7" height="7" rx="1"/>
+          <rect x="14" y="14" width="7" height="7" rx="1"/>
+        </svg>
+        نظرة عامة
+      </div>
+
+      <div class="nav-item" onclick="showTab('employees')" role="button" tabindex="0" aria-label="الموظفون">
+        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+        الموظفون
+      </div>
+
+      <div class="nav-item" onclick="showTab('salaries')" role="button" tabindex="0" aria-label="المرتبات">
+        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+          <line x1="12" y1="1" x2="12" y2="23"/>
+          <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+        </svg>
+        المرتبات
+      </div>
+
+      <div class="nav-item" onclick="showTab('contracts')" role="button" tabindex="0" aria-label="العقود">
+        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+        </svg>
+        العقود
+      </div>
+
+      <div class="nav-section">التحليلات</div>
+
+      <div class="nav-item" onclick="showTab('insights')" role="button" tabindex="0" aria-label="الرؤى والتوصيات">
+        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+        </svg>
+        الرؤى والتوصيات
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="avatar" aria-hidden="true">HR</div>
+      <div class="avatar-info">
+        <div class="avatar-name">مدير الموارد البشرية</div>
+        <div class="avatar-role">
+          <a href="https://www.facebook.com/ahmad.s.mohamed.280010/" target="_blank" rel="noopener">
+            Ahmad S Mohamed 2026 &copy;
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- ══════════════════════════════════════════════════════════
+       MAIN
+  ══════════════════════════════════════════════════════════ -->
+  <div class="main">
+
+    <!-- ── HEADER ── -->
+    <header class="header">
+      <div class="header-left">
+        <button class="mobile-toggle" onclick="toggleSidebar()" aria-label="فتح القائمة الجانبية">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
+        <div>
+          <div class="page-title" id="page-title">لوحة نظرة عامة</div>
+          <div class="breadcrumb">الرئيسية › <span id="page-breadcrumb">نظرة عامة</span></div>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <div class="search-box" role="search">
+          <svg class="search-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input type="search" placeholder="بحث..." id="globalSearch"
+                 oninput="handleSearch(this.value)" aria-label="بحث عن موظف">
+        </div>
+
+        <div class="tooltip-wrap">
+          <button class="btn-icon" onclick="toggleTheme()" aria-label="تبديل الوضع الليلي">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" id="theme-icon" aria-hidden="true">
+              <circle cx="12" cy="12" r="5"/>
+              <line x1="12" y1="1"  x2="12" y2="3"/>
+              <line x1="12" y1="21" x2="12" y2="23"/>
+              <line x1="4.22" y1="4.22"   x2="5.64" y2="5.64"/>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+              <line x1="1"  y1="12" x2="3"  y2="12"/>
+              <line x1="21" y1="12" x2="23" y2="12"/>
+              <line x1="4.22" y1="19.78"  x2="5.64" y2="18.36"/>
+              <line x1="18.36" y1="5.64"  x2="19.78" y2="4.22"/>
+            </svg>
+          </button>
+          <span class="tooltip-box">تبديل الوضع</span>
+        </div>
+
+        <div class="tooltip-wrap">
+          <button class="btn-icon" aria-label="الإشعارات">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            </svg>
+            <span class="notif-dot"></span>
+          </button>
+          <span class="tooltip-box">الإشعارات (3)</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- ══════════════════════════════════════════════════════
+         TAB: OVERVIEW
+    ══════════════════════════════════════════════════════ -->
+    <div class="content" id="tab-overview">
+
+      <!-- KPI cards -->
+      <div class="kpi-grid">
+
+        <div class="kpi-card blue animate animate-1">
+          <div class="kpi-header">
+            <div class="kpi-icon blue">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+            </div>
+            <span class="kpi-badge up">↑ 100%</span>
+          </div>
+          <div class="kpi-value" id="kpi-total">—</div>
+          <div class="kpi-label">إجمالي الموظفين</div>
+          <div class="kpi-sub">مقيدون في النظام</div>
+        </div>
+
+        <div class="kpi-card green animate animate-2">
+          <div class="kpi-header">
+            <div class="kpi-icon green">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+            <span class="kpi-badge up">↑ نشط</span>
+          </div>
+          <div class="kpi-value" id="kpi-active">—</div>
+          <div class="kpi-label">موظفون نشطون</div>
+          <div class="kpi-sub">نسبة من الإجمالي</div>
+        </div>
+
+        <div class="kpi-card amber animate animate-3">
+          <div class="kpi-header">
+            <div class="kpi-icon amber">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+            </div>
+            <span class="kpi-badge neutral">تحت التجربة</span>
+          </div>
+          <div class="kpi-value" id="kpi-probation">—</div>
+          <div class="kpi-label">تحت الاختبار</div>
+          <div class="kpi-sub">نسبة من الإجمالي</div>
+        </div>
+
+        <div class="kpi-card red animate animate-4">
+          <div class="kpi-header">
+            <div class="kpi-icon red">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="15" y1="9" x2="9" y2="15"/>
+                <line x1="9" y1="9" x2="15" y2="15"/>
+              </svg>
+            </div>
+            <span class="kpi-badge down">انتهت</span>
+          </div>
+          <div class="kpi-value" id="kpi-terminated">—</div>
+          <div class="kpi-label">موظفون منتهو الخدمة</div>
+          <div class="kpi-sub">نسبة من الإجمالي</div>
+        </div>
+
+        <div class="kpi-card purple animate animate-5">
+          <div class="kpi-header">
+            <div class="kpi-icon purple">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                <line x1="12" y1="1" x2="12" y2="23"/>
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+              </svg>
+            </div>
+            <span class="kpi-badge neutral">متوسط</span>
+          </div>
+          <div class="kpi-value" id="kpi-avg-salary">—</div>
+          <div class="kpi-label">متوسط الراتب (ج.م)</div>
+          <div class="kpi-sub">بما يشمل جميع البدلات</div>
+        </div>
+
+        <div class="kpi-card teal animate animate-6">
+          <div class="kpi-header">
+            <div class="kpi-icon teal">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+              </svg>
+            </div>
+            <span class="kpi-badge up">ساري</span>
+          </div>
+          <div class="kpi-value" id="kpi-contracts">—</div>
+          <div class="kpi-label">عقود سارية</div>
+          <div class="kpi-sub" id="kpi-near-expiry-sub">قاربت على الانتهاء</div>
+        </div>
+
+      </div><!-- /.kpi-grid -->
+
+      <!-- Charts row 1 -->
+      <div class="charts-grid">
+        <div class="chart-card animate animate-1">
+          <div class="chart-title">التوظيف السنوي</div>
+          <div class="chart-subtitle">عدد الموظفين المعينين كل عام</div>
+          <div class="chart-wrap" style="height:220px">
+            <canvas id="hiresChart" role="img" aria-label="مخطط شريطي لأعداد التوظيف السنوي"></canvas>
+          </div>
+        </div>
+        <div class="chart-card animate animate-2">
+          <div class="chart-title">توزيع الموظفين حسب الإدارة</div>
+          <div class="chart-subtitle">نسبة كل إدارة من إجمالي القوى العاملة</div>
+          <div class="chart-wrap" style="height:220px">
+            <canvas id="deptChart" role="img" aria-label="مخطط دائري لتوزيع الموظفين على الإدارات"></canvas>
+          </div>
+          <div class="legend" id="dept-legend"></div>
+        </div>
+      </div>
+
+      <!-- Charts row 2 -->
+      <div class="charts-grid-3">
+        <div class="chart-card animate animate-1">
+          <div class="chart-title">توزيع الجنس</div>
+          <div class="chart-subtitle">ذكور مقابل إناث</div>
+          <div class="chart-wrap" style="height:180px">
+            <canvas id="genderChart" role="img" aria-label="مخطط دائري لتوزيع الجنس"></canvas>
+          </div>
+          <div class="legend" id="gender-legend"></div>
+        </div>
+        <div class="chart-card animate animate-2">
+          <div class="chart-title">نوع الدوام</div>
+          <div class="chart-subtitle">دوام كامل مقابل جزئي</div>
+          <div class="chart-wrap" style="height:180px">
+            <canvas id="workTypeChart" role="img" aria-label="مخطط دائري لنوع الدوام"></canvas>
+          </div>
+          <div class="legend" id="worktype-legend"></div>
+        </div>
+        <div class="chart-card animate animate-3">
+          <div class="chart-title">الحالة الاجتماعية</div>
+          <div class="chart-subtitle">توزيع الموظفين</div>
+          <div class="chart-wrap" style="height:180px">
+            <canvas id="maritalChart" role="img" aria-label="مخطط دائري للحالة الاجتماعية"></canvas>
+          </div>
+          <div class="legend" id="marital-legend"></div>
+        </div>
+      </div>
+
+      <!-- Charts row 3 -->
+      <div class="charts-grid">
+        <div class="chart-card animate animate-1">
+          <div class="chart-title">متوسط الرواتب حسب المسمى الوظيفي</div>
+          <div class="chart-subtitle">مقارنة متوسط إجمالي الراتب</div>
+          <div class="chart-wrap" style="height:260px">
+            <canvas id="salaryJobChart" role="img" aria-label="مخطط أعمدة أفقية لمتوسط الرواتب حسب المسمى الوظيفي"></canvas>
+          </div>
+        </div>
+        <div class="chart-card animate animate-2">
+          <div class="chart-title">نوع العقد</div>
+          <div class="chart-subtitle">توزيع أنواع العقود</div>
+          <div class="chart-wrap" style="height:260px">
+            <canvas id="contractTypeChart" role="img" aria-label="مخطط شريطي لأنواع العقود"></canvas>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /#tab-overview -->
+
+    <!-- ══════════════════════════════════════════════════════
+         TAB: EMPLOYEES
+    ══════════════════════════════════════════════════════ -->
+    <div class="content" id="tab-employees" style="display:none">
+
+      <div class="filters-bar" role="search" aria-label="تصفية الموظفين">
+        <span class="filter-label">تصفية:</span>
+
+        <select class="filter-select" id="filter-dept" onchange="filterTable()" aria-label="تصفية بالإدارة">
+          <option value="">جميع الإدارات</option>
+          <option>المالية</option>
+          <option>الإدارة</option>
+          <option>المشتريات</option>
+          <option>التصميم</option>
+          <option>الهندسة</option>
+        </select>
+
+        <select class="filter-select" id="filter-status" onchange="filterTable()" aria-label="تصفية بالحالة">
+          <option value="">جميع الحالات</option>
+          <option value="نشط">نشط</option>
+          <option value="تحت التجربه">تحت التجربة</option>
+          <option value="منتهي">منتهي</option>
+        </select>
+
+        <select class="filter-select" id="filter-gender" onchange="filterTable()" aria-label="تصفية بالجنس">
+          <option value="">الجنس</option>
+          <option value="ذكر">ذكر</option>
+          <option value="انثى">أنثى</option>
+        </select>
+
+        <select class="filter-select" id="filter-loc" onchange="filterTable()" aria-label="تصفية بالموقع">
+          <option value="">الموقع</option>
+          <option>القاهره</option>
+          <option>أسيوط</option>
+          <option>بدر</option>
+          <option>الجيزه</option>
+        </select>
+
+        <button class="filter-btn outline" onclick="resetFilters()" aria-label="مسح الفلاتر">مسح</button>
+
+        <div style="margin-right:auto" class="export-btns">
+          <button class="export-btn" onclick="exportCSV()" aria-label="تصدير CSV">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            تصدير CSV
+          </button>
+          <button class="export-btn" onclick="window.print()" aria-label="طباعة">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+              <polyline points="6 9 6 2 18 2 18 9"/>
+              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+              <rect x="6" y="14" width="12" height="8"/>
+            </svg>
+            طباعة
+          </button>
+        </div>
+      </div>
+
+      <div class="table-card">
+        <div class="table-header">
+          <div class="section-title">
+            <span class="section-dot"></span>
+            سجلات الموظفين
+            <span id="row-count" style="font-size:12px;color:var(--text3);font-weight:400;margin-right:8px"></span>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table id="empTable" role="grid" aria-label="جدول الموظفين">
+            <thead>
+              <tr>
+                <th onclick="sortTable('id')"              scope="col">الكود ↕</th>
+                <th onclick="sortTable('name')"            scope="col">الاسم ↕</th>
+                <th onclick="sortTable('dept')"            scope="col">الإدارة ↕</th>
+                <th onclick="sortTable('title')"           scope="col">المسمى ↕</th>
+                <th onclick="sortTable('status')"          scope="col">الحالة ↕</th>
+                <th onclick="sortTable('location')"        scope="col">الموقع ↕</th>
+                <th onclick="sortTable('salary')"          scope="col">الراتب الإجمالي ↕</th>
+                <th onclick="sortTable('contract_status')" scope="col">حالة العقد ↕</th>
+              </tr>
+            </thead>
+            <tbody id="emp-tbody"></tbody>
+          </table>
+
+          <div id="empty-state" class="empty-state" style="display:none" role="status">
+            <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <p>لا توجد نتائج تطابق معايير البحث</p>
+          </div>
+        </div>
+
+        <div class="pagination" id="pagination" role="navigation" aria-label="التنقل بين الصفحات"></div>
+      </div>
+
+    </div><!-- /#tab-employees -->
+
+    <!-- ══════════════════════════════════════════════════════
+         TAB: SALARIES
+    ══════════════════════════════════════════════════════ -->
+    <div class="content" id="tab-salaries" style="display:none">
+
+      <div class="kpi-grid" style="margin-bottom:20px">
+        <div class="kpi-card purple">
+          <div class="kpi-header"><div class="kpi-icon purple">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+              <line x1="12" y1="1" x2="12" y2="23"/>
+              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+            </svg>
+          </div></div>
+          <div class="kpi-value" id="sal-avg">—</div>
+          <div class="kpi-label">متوسط الراتب الأساسي (ج.م)</div>
+        </div>
+        <div class="kpi-card green">
+          <div class="kpi-header"><div class="kpi-icon green">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+              <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
+              <polyline points="16 7 22 7 22 13"/>
+            </svg>
+          </div></div>
+          <div class="kpi-value" id="sal-max">—</div>
+          <div class="kpi-label">أعلى راتب إجمالي (ج.م)</div>
+        </div>
+        <div class="kpi-card amber">
+          <div class="kpi-header"><div class="kpi-icon amber">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+              <polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/>
+              <polyline points="16 17 22 17 22 11"/>
+            </svg>
+          </div></div>
+          <div class="kpi-value" id="sal-min">—</div>
+          <div class="kpi-label">أدنى راتب إجمالي (ج.م)</div>
+        </div>
+        <div class="kpi-card teal">
+          <div class="kpi-header"><div class="kpi-icon teal">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="2" y="3" width="20" height="14" rx="2"/>
+              <line x1="8" y1="21" x2="16" y2="21"/>
+              <line x1="12" y1="17" x2="12" y2="21"/>
+            </svg>
+          </div></div>
+          <div class="kpi-value" id="sal-total">—</div>
+          <div class="kpi-label">إجمالي فاتورة الرواتب (ج.م)</div>
+        </div>
+      </div>
+
+      <div class="charts-grid">
+        <div class="chart-card">
+          <div class="chart-title">توزيع الرواتب</div>
+          <div class="chart-subtitle">عدد الموظفين في كل شريحة راتب</div>
+          <div class="chart-wrap" style="height:240px">
+            <canvas id="salaryRangeChart" role="img" aria-label="توزيع الرواتب حسب الشريحة"></canvas>
+          </div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">متوسط الراتب حسب الإدارة</div>
+          <div class="chart-subtitle">مقارنة الرواتب بين الإدارات</div>
+          <div class="chart-wrap" style="height:240px">
+            <canvas id="deptSalaryChart" role="img" aria-label="متوسط الراتب حسب الإدارة"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="charts-grid">
+        <div class="chart-card">
+          <div class="chart-title">الراتب حسب الجنس</div>
+          <div class="chart-subtitle">متوسط الراتب الإجمالي</div>
+          <div class="chart-wrap" style="height:200px">
+            <canvas id="genderSalaryChart" role="img" aria-label="الراتب حسب الجنس"></canvas>
+          </div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">الراتب حسب المؤهل</div>
+          <div class="chart-subtitle">أثر التعليم على الراتب</div>
+          <div class="chart-wrap" style="height:200px">
+            <canvas id="eduSalaryChart" role="img" aria-label="الراتب حسب المؤهل الدراسي"></canvas>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /#tab-salaries -->
+
+    <!-- ══════════════════════════════════════════════════════
+         TAB: CONTRACTS
+    ══════════════════════════════════════════════════════ -->
+    <div class="content" id="tab-contracts" style="display:none">
+
+      <div class="kpi-grid">
+        <div class="kpi-card green">
+          <div class="kpi-header"><div class="kpi-icon green">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div></div>
+          <div class="kpi-value" id="kpi-active-contracts">—</div>
+          <div class="kpi-label">عقود سارية</div>
+        </div>
+        <div class="kpi-card red">
+          <div class="kpi-header"><div class="kpi-icon red">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="15" y1="9" x2="9" y2="15"/>
+              <line x1="9" y1="9" x2="15" y2="15"/>
+            </svg>
+          </div></div>
+          <div class="kpi-value" id="kpi-expired-contracts">—</div>
+          <div class="kpi-label">عقود منتهية</div>
+        </div>
+        <div class="kpi-card amber">
+          <div class="kpi-header"><div class="kpi-icon amber">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+              <line x1="12" y1="9" x2="12" y2="13"/>
+              <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+          </div></div>
+          <div class="kpi-value" id="kpi-near-expiry">—</div>
+          <div class="kpi-label">تقارب الانتهاء</div>
+          <div class="kpi-sub">⚠ يتطلب متابعة فورية</div>
+        </div>
+        <div class="kpi-card blue">
+          <div class="kpi-header"><div class="kpi-icon blue">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="18" rx="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8"  y1="2" x2="8"  y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+          </div></div>
+          <div class="kpi-value" id="kpi-avg-contract">—</div>
+          <div class="kpi-label">متوسط مدة العقد (سنة)</div>
+        </div>
+      </div>
+
+      <div class="charts-grid">
+        <div class="chart-card">
+          <div class="chart-title">حالة العقود</div>
+          <div class="chart-subtitle">توزيع حالات العقود الحالية</div>
+          <div class="chart-wrap" style="height:240px">
+            <canvas id="contractStatusChart" role="img" aria-label="حالة العقود"></canvas>
+          </div>
+          <div class="legend" id="contract-status-legend"></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">أنواع العقود</div>
+          <div class="chart-subtitle">توزيع أنواع العقود المبرمة</div>
+          <div class="chart-wrap" style="height:240px">
+            <canvas id="contractTypeChart2" role="img" aria-label="أنواع العقود"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="charts-grid">
+        <div class="chart-card">
+          <div class="chart-title">التأمين الصحي – شركات التأمين</div>
+          <div class="chart-subtitle">توزيع الموظفين على شركات التأمين</div>
+          <div class="chart-wrap" style="height:200px">
+            <canvas id="insuranceChart" role="img" aria-label="توزيع شركات التأمين"></canvas>
+          </div>
+          <div class="legend" id="insurance-legend"></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">فئات التأمين</div>
+          <div class="chart-subtitle">توزيع الفئات A, B, C</div>
+          <div class="chart-wrap" style="height:200px">
+            <canvas id="insuranceCatChart" role="img" aria-label="فئات التأمين"></canvas>
+          </div>
+          <div class="legend" id="insurancecat-legend"></div>
+        </div>
+      </div>
+
+    </div><!-- /#tab-contracts -->
+
+    <!-- ══════════════════════════════════════════════════════
+         TAB: INSIGHTS
+    ══════════════════════════════════════════════════════ -->
+    <div class="content" id="tab-insights" style="display:none">
+
+      <div style="margin-bottom:20px">
+        <div class="section-title" style="margin-bottom:4px">
+          <span class="section-dot"></span>
+          الرؤى التحليلية والتوصيات
+        </div>
+        <p style="font-size:13px;color:var(--text3)">بناءً على تحليل بيانات الموارد البشرية للمؤسسة</p>
+      </div>
+
+      <div class="insight-grid">
+        <div class="insight-card amber">
+          <div class="insight-title">⚠ تنبيه: معدل التجربة مرتفع</div>
+          <div class="insight-text">نسبة عالية من الموظفين تحت التجربة. يُنصح بمراجعة سياسات الاستقطاب وتسريع عمليات التثبيت.</div>
+          <div class="progress-bar"><div class="progress-fill" style="width:40%;background:var(--amber)"></div></div>
+        </div>
+        <div class="insight-card red">
+          <div class="insight-title">⚡ عقود قاربت على الانتهاء</div>
+          <div class="insight-text">عقود على وشك الانتهاء وتحتاج إلى تجديد فوري لتفادي فجوات في الكفاءات البشرية.</div>
+          <div class="progress-bar"><div class="progress-fill" style="width:100%;background:var(--red)"></div></div>
+        </div>
+        <div class="insight-card">
+          <div class="insight-title">📊 تركز في الإدارة المالية</div>
+          <div class="insight-text">نسبة كبيرة من الموظفين في إدارة المالية. يُقترح دراسة إعادة توزيع الموارد البشرية.</div>
+          <div class="progress-bar"><div class="progress-fill" style="width:47%;background:var(--accent)"></div></div>
+        </div>
+        <div class="insight-card green">
+          <div class="insight-title">✅ تنوع جنساني جيد</div>
+          <div class="insight-text">نسبة الإناث تعكس تنوعاً جنسانياً إيجابياً. الإناث يحصلن على متوسط راتب أعلى مقارنة بالذكور.</div>
+          <div class="progress-bar"><div class="progress-fill" style="width:48%;background:var(--green)"></div></div>
+        </div>
+        <div class="insight-card purple">
+          <div class="insight-title">🎓 تجانس تعليمي</div>
+          <div class="insight-text">الغالبية العظمى من الموظفين يحملون بكالوريوس. يُنصح بجذب كفاءات ذات شهادات عليا.</div>
+          <div class="progress-bar"><div class="progress-fill" style="width:84%;background:var(--purple)"></div></div>
+        </div>
+        <div class="insight-card green">
+          <div class="insight-title">📈 استقرار في التوظيف</div>
+          <div class="insight-text">معدل التوظيف السنوي ثابت نسبياً مما يعكس خطة توظيف منتظمة وسياسة نمو مدروسة.</div>
+          <div class="progress-bar"><div class="progress-fill" style="width:65%;background:var(--green)"></div></div>
+        </div>
+      </div>
+
+      <div class="chart-card" style="margin-bottom:20px">
+        <div class="chart-title">الموقع حسب عدد الموظفين</div>
+        <div class="chart-subtitle">توزيع القوى العاملة جغرافياً</div>
+        <div class="chart-wrap" style="height:220px">
+          <canvas id="locationChart" role="img" aria-label="توزيع الموظفين حسب الموقع"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-title">البنوك المستخدمة لصرف الرواتب</div>
+        <div class="chart-subtitle">توزيع الموظفين على البنوك</div>
+        <div class="chart-wrap" style="height:160px">
+          <canvas id="bankChart" role="img" aria-label="توزيع البنوك"></canvas>
+        </div>
+        <div class="legend" id="bank-legend"></div>
+      </div>
+
+    </div><!-- /#tab-insights -->
+
+  </div><!-- /.main -->
+
+  <!-- Scripts (loaded after DOM; XLSX & Chart.js are already deferred above) -->
+  <script src="maine.js"></script>
+
+</body>
+</html>
